@@ -20,7 +20,7 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: MIT License",
 ]
-urls = { repository = "https://github.com/UQatKIT/LS-Prior", documentation = "https://uqatkit.github.io/LS-Prior/" }
+urls = { repository = "https://github.com/maximilian-kruse/LS-Prior", documentation = "https://maximilian-kruse.github.io/LS-Prior/" }
 
 
 # ==================================================================================================

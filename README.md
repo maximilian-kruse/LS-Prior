@@ -1,6 +1,6 @@
 ![CI](https://img.shields.io/github/actions/workflow/status/maximilian-kruse/LS-Prior/ci.yaml?label=CI)
 ![Docs](https://img.shields.io/github/actions/workflow/status/maximilian-kruse/LS-Prior/docs.yaml?label=Docs)
-![Python Version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2FUQatKIT%2FLS-Prior%2Fmain%2Fpyproject.toml)
+![Python Version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Fmaximilian-kruse%2FLS-Prior%2Fmain%2Fpyproject.toml)
 ![License](https://img.shields.io/github/license/maximilian-kruse/LS-Prior)
 ![Beartype](https://github.com/beartype/beartype-assets/raw/main/badge/bear-ified.svg)
 ![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
