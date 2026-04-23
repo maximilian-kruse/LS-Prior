@@ -148,13 +148,7 @@ class Prior:
             np.ndarray[tuple[int], np.dtype[np.float64]]: Hessian-vector product,
                 given on mesh vertices.
         """
-        direction_vector_dof = self._fem_converter.convert_vertex_values_to_dofs(direction_vector)
-        self._check_input_dimension(direction_vector_dof)
-        hessian_vector_product_dof = self._precision_operator.apply(direction_vector_dof)
-        self._check_output_dimension(hessian_vector_product_dof)
-        hessian_vector_product = self._fem_converter.convert_dofs_to_vertex_values(
-            hessian_vector_product_dof
-        )
+        hessian_vector_product = self.apply_precision_operator(direction_vector)
         return hessian_vector_product
 
     # ----------------------------------------------------------------------------------------------
@@ -176,6 +170,52 @@ class Prior:
         sample_vector_dof += self._mean_vector
         sample_vector = self._fem_converter.convert_dofs_to_vertex_values(sample_vector_dof)
         return sample_vector
+
+    # ----------------------------------------------------------------------------------------------
+    def apply_covariance_operator(
+        self,
+        parameter_vector: np.ndarray[tuple[int], np.dtype[np.float64]],
+    ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+        """Apply the covariance operator to a given parameter vector.
+
+        Args:
+            parameter_vector (np.ndarray[tuple[int], np.dtype[np.float64]]): Parameter candidate for
+                which to apply the covariance operator, given on mesh vertices.
+
+        Returns:
+            np.ndarray[tuple[int], np.dtype[np.float64]]: Result of applying the covariance
+                operator, given on mesh vertices.
+        """
+        parameter_vector_dof = self._fem_converter.convert_vertex_values_to_dofs(parameter_vector)
+        self._check_input_dimension(parameter_vector_dof)
+        covariance_applied_dof = self._covariance_operator.apply(parameter_vector_dof)
+        self._check_output_dimension(covariance_applied_dof)
+        covariance_applied = self._fem_converter.convert_dofs_to_vertex_values(
+            covariance_applied_dof
+        )
+        return covariance_applied
+
+    # ----------------------------------------------------------------------------------------------
+    def apply_precision_operator(
+        self,
+        parameter_vector: np.ndarray[tuple[int], np.dtype[np.float64]],
+    ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+        """Apply the precision operator to a given parameter vector.
+
+        Args:
+            parameter_vector (np.ndarray[tuple[int], np.dtype[np.float64]]): Parameter candidate for
+                which to apply the precision operator, given on mesh vertices.
+
+        Returns:
+            np.ndarray[tuple[int], np.dtype[np.float64]]: Result of applying the precision
+                operator, given on mesh vertices.
+        """
+        parameter_vector_dof = self._fem_converter.convert_vertex_values_to_dofs(parameter_vector)
+        self._check_input_dimension(parameter_vector_dof)
+        precision_applied_dof = self._precision_operator.apply(parameter_vector_dof)
+        self._check_output_dimension(precision_applied_dof)
+        precision_applied = self._fem_converter.convert_dofs_to_vertex_values(precision_applied_dof)
+        return precision_applied
 
     # ----------------------------------------------------------------------------------------------
     def _check_input_dimension(self, vector: np.ndarray) -> None:
