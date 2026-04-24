@@ -86,6 +86,12 @@ class Prior:
         self._prng = np.random.default_rng(seed)
 
     # ----------------------------------------------------------------------------------------------
+    @property
+    def random_vector_size(self) -> int:
+        """Return the required size of the random vector for sampling."""
+        return self._covariance_factorization.shape[1]
+
+    # ----------------------------------------------------------------------------------------------
     def evaluate_cost(
         self, parameter_vector: np.ndarray[tuple[int], np.dtype[np.float64]]
     ) -> float:
@@ -163,8 +169,7 @@ class Prior:
         Returns:
             np.ndarray[tuple[int], np.dtype[np.float64]]: Sample vector, given on mesh vertices.
         """
-        random_vector_size = self._covariance_factorization.shape[1]
-        random_vector = self._prng.normal(loc=0.0, scale=1.0, size=random_vector_size)
+        random_vector = self._prng.normal(loc=0.0, scale=1.0, size=self.random_vector_size)
         sample_vector_dof = self._covariance_factorization.apply(random_vector)
         self._check_output_dimension(sample_vector_dof)
         sample_vector_dof += self._mean_vector
@@ -194,6 +199,37 @@ class Prior:
             covariance_applied_dof
         )
         return covariance_applied
+
+    # ----------------------------------------------------------------------------------------------
+    def apply_covariance_factorization(
+        self,
+        random_vector: np.ndarray[tuple[int], np.dtype[np.float64]],
+    ) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+        """Apply the covariance factorization to a given parameter vector.
+
+        Args:
+            random_vector (np.ndarray[tuple[int], np.dtype[np.float64]]): Random vector for
+                which to apply the covariance factorization.
+
+        Returns:
+            np.ndarray[tuple[int], np.dtype[np.float64]]: Result of applying the covariance
+                factorization, given on mesh vertices.
+
+        Raises:
+            ValueError: Checks that the random vector has the correct shape.
+        """
+        if random_vector.shape != (self.random_vector_size,):
+            raise ValueError(
+                f"Random vector shape {random_vector.shape} does not match "
+                "the covariance factorization input dimension "
+                f"{self.random_vector_size}."
+            )
+        covariance_factorization_applied_dof = self._covariance_factorization.apply(random_vector)
+        self._check_output_dimension(covariance_factorization_applied_dof)
+        covariance_factorization_applied = self._fem_converter.convert_dofs_to_vertex_values(
+            covariance_factorization_applied_dof
+        )
+        return covariance_factorization_applied
 
     # ----------------------------------------------------------------------------------------------
     def apply_precision_operator(
